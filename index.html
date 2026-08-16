@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Agilidad</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f2f2f7">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Agilidad">
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --surface: #ffffff;
+    --surface-2: #f2f2f7;
+    --hairline: rgba(60,60,67,0.13);
+    --text: #1d1d1f;
+    --text-dim: #86868b;
+    --blue: #007aff;
+    --green: #34c759;
+    --red: #ff3b30;
+    --orange: #ff9500;
+    --purple: #af52de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+    --radius-l: 28px;
+    --radius-m: 18px;
+    --radius-s: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: max(28px, env(safe-area-inset-top)) 20px 40px;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { width: 100%; max-width: 420px; }
+
+  /* ---------- HEADER ---------- */
+  .header { text-align: center; margin-bottom: 34px; }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .title {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, #1d1d1f 0%, #48484a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---------- MENU ---------- */
+  .menu { display: flex; flex-direction: column; gap: 12px; }
+  .mode-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-m);
+    padding: 16px 18px;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .mode-card:active { transform: scale(0.97); background: var(--surface-2); }
+  .mode-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .mode-copy b { display: block; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .mode-copy span { display: block; font-size: 13px; color: var(--text-dim); margin-top: 2px; line-height: 1.35; }
+  .mode-card .badge {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- SCREEN ---------- */
+  .screen { width: 100%; display: none; flex-direction: column; align-items: center; animation: rise 0.35s ease; }
+  .screen.active { display: flex; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .top-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .stat .lbl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 1px; }
+
+  .card {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-l);
+    padding: 34px 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+
+  .prompt {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: center;
+    min-height: 50px;
+    font-variant-numeric: tabular-nums;
+  }
+  .prompt.small { font-size: 20px; font-weight: 600; color: var(--text-dim); line-height: 1.4; }
+
+  .answer-input {
+    width: 100%;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    padding: 16px;
+    border-radius: var(--radius-s);
+    border: 1px solid var(--hairline);
+    background: var(--surface-2);
+    color: var(--text);
+    margin-top: 26px;
+    font-variant-numeric: tabular-nums;
+  }
+  .answer-input:focus { outline: none; border-color: var(--blue); }
+  .answer-input::placeholder { color: #636366; font-weight: 400; font-size: 16px; }
+
+  .btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-s);
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 14px;
+    letter-spacing: -0.01em;
+  }
+  .btn:active { opacity: 0.75; }
+  .btn.secondary { background: transparent; border: 1px solid var(--hairline); color: var(--text-dim); }
+  .btn.secondary:active { background: var(--surface-2); }
+
+  .switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-s);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .switch-row .switch-label { font-size: 15px; font-weight: 500; color: var(--text); }
+  .switch-row .switch-sub { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+  .switch { position: relative; width: 51px; height: 31px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .switch .track {
+    position: absolute; inset: 0;
+    background: #e9e9eb;
+    border-radius: 16px;
+    transition: background 0.2s ease;
+  }
+  .switch input:checked + .track { background: var(--green); }
+  .switch .thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 27px; height: 27px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+    transition: transform 0.2s ease;
+  }
+  .switch input:checked ~ .thumb { transform: translateX(20px); }
+
+  .feedback { min-height: 20px; font-size: 14px; font-weight: 600; margin-top: 12px; }
+  .feedback.ok { color: var(--green); }
+  .feedback.bad { color: var(--red); }
+
+  /* grid memory */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 26px;
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .cell:active { transform: scale(0.94); }
+  .cell.lit { background: var(--blue); }
+  .cell.correct { background: var(--green); }
+  .cell.wrong { background: var(--red); }
+
+  /* quiz options */
+  .quiz-progress {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    margin-bottom: 22px;
+  }
+  .quiz-progress .dot { flex: 1; height: 4px; border-radius: 2px; background: var(--surface-2); }
+  .quiz-progress .dot.done { background: var(--blue); }
+  .quiz-progress .dot.wrong { background: var(--red); }
+
+  .quiz-category {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .quiz-question {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+  .quiz-options { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    width: 100%;
+    padding: 15px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-s);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+  }
+  .quiz-opt:active { background: #3a3a3c; }
+  .quiz-opt.correct { background: rgba(52,199,89,0.15); border-color: var(--green); color: #1a7d34; font-weight: 700; }
+  .quiz-opt.wrong { background: rgba(255,59,48,0.13); border-color: var(--red); color: #c8281e; font-weight: 700; }
+  .quiz-opt.disabled { pointer-events: none; }
+
+  /* result */
+  .result-icon { font-size: 44px; margin-bottom: 6px; }
+  .result-title { font-size: 15px; color: var(--text-dim); font-weight: 600; }
+  .result-big {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, #1d1d1f 0%, #6e6e73 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 4px 0 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .result-sub { font-size: 14px; color: var(--text-dim); text-align: center; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header" id="mainHeader">
+    <div class="eyebrow">Entrenamiento diario</div>
+    <div class="title">Agilidad</div>
+  </div>
+
+  <div id="menu" class="menu">
+    <button class="mode-card" onclick="startMath()">
+      <div class="mode-icon" style="background:rgba(255,149,0,0.14); color:var(--orange);">✦</div>
+      <div class="mode-copy"><b>Cálculo rápido</b><span>Sumas, restas, multiplicaciones y porcentajes contrarreloj</span></div>
+      <div class="badge" id="badge-math">–</div>
+    </button>
+    <button class="mode-card" onclick="startSequence()">
+      <div class="mode-icon" style="background:rgba(0,122,255,0.14); color:var(--blue);">◎</div>
+      <div class="mode-copy"><b>Memoria de secuencia</b><span>Recuerda series de números cada vez más largas</span></div>
+      <div class="badge" id="badge-seq">–</div>
+    </button>
+    <button class="mode-card" onclick="startGrid()">
+      <div class="mode-icon" style="background:rgba(52,199,89,0.14); color:var(--green);">▦</div>
+      <div class="mode-copy"><b>Memoria de cuadrícula</b><span>Memoriza el orden en que se iluminan las celdas</span></div>
+      <div class="badge" id="badge-grid">–</div>
+    </button>
+    <button class="mode-card" onclick="startQuiz()">
+      <div class="mode-icon" style="background:rgba(175,82,222,0.14); color:var(--purple);">🇪🇸</div>
+      <div class="mode-copy"><b>Geografía de España</b><span>Comunidades, provincias y ciudades — 3 opciones</span></div>
+      <div class="badge" id="badge-quiz">–</div>
+    </button>
+  </div>
+
+  <!-- MATH -->
+  <div id="mathScreen" class="screen">
+    <div class="switch-row">
+      <div>
+        <div class="switch-label">Contrarreloj</div>
+        <div class="switch-sub">60 segundos para sumar aciertos</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="timedToggle" checked onchange="toggleTimedMode(this.checked)">
+        <span class="track"></span>
+        <span class="thumb"></span>
+      </label>
+    </div>
+    <div class="top-bar">
+      <div class="stat"><div class="num" id="mathScore">0</div><div class="lbl">Aciertos</div></div>
+      <div class="stat"><div class="num" id="mathTime">60</div><div class="lbl" id="mathTimeLbl">Segundos</div></div>
+    </div>
+    <div class="card">
+      <div class="prompt" id="mathPrompt">–</div>
+      <input class="answer-input" id="mathInput" type="number" inputmode="numeric" placeholder="Respuesta">
+      <button class="btn" onclick="submitMath()">Comprobar</button>
+      <div class="feedback" id="mathFeedback"></div>
+    </div>
+    <button class="btn secondary" onclick="backToMenu()">Salir</button>
+  </div>
+
+  <!-- SEQUENCE -->
+  <div id="seqScreen" class="screen">
+    <div class="top-bar">
+      <div class="stat"><div class="num" id="seqLevel">1</div><div class="lbl">Nivel</div></div>
+      <div class="stat"><div class="num" id="seqBest">0</div><div class="lbl">Récord</div></div>
+    </div>
+    <div class="card">
+      <div class="prompt" id="seqPrompt">Memoriza…</div>
+      <input class="answer-input" id="seqInput" type="text" inputmode="numeric" placeholder="Escribe la secuencia" style="display:none">
+      <button class="btn" id="seqBtn" onclick="submitSeq()" style="display:none">Comprobar</button>
+      <div class="feedback" id="seqFeedback"></div>
+    </div>
+    <button class="btn secondary" onclick="backToMenu()">Salir</button>
+  </div>
+
+  <!-- GRID -->
+  <div id="gridScreen" class="screen">
+    <div class="top-bar">
+      <div class="stat"><div class="num" id="gridLevel">1</div><div class="lbl">Nivel</div></div>
+      <div class="stat"><div class="num" id="gridBest">0</div><div class="lbl">Récord</div></div>
+    </div>
+    <div class="card">
+      <div class="prompt small" id="gridPrompt">Observa la cuadrícula…</div>
+      <div class="grid" id="gridEl"></div>
+      <div class="feedback" id="gridFeedback"></div>
+    </div>
+    <button class="btn secondary" onclick="backToMenu()">Salir</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quizScreen" class="screen">
+    <div class="top-bar">
+      <div class="stat"><div class="num" id="quizScore">0</div><div class="lbl">Aciertos</div></div>
+      <div class="stat"><div class="num" id="quizNum">1/10</div><div class="lbl">Pregunta</div></div>
+    </div>
+    <div class="card">
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div class="quiz-category" id="quizCategory">Comunidad autónoma</div>
+      <div class="quiz-question" id="quizQuestion">¿Cuál es la capital de…?</div>
+      <div class="quiz-options" id="quizOptions"></div>
+    </div>
+    <button class="btn secondary" onclick="backToMenu()">Salir</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultScreen" class="screen">
+    <div class="header" style="margin-bottom:22px;">
+      <div class="result-icon" id="resultIcon">🎯</div>
+      <div class="result-title" id="resultTitle">Resultado</div>
+      <div class="result-big" id="resultBig">0</div>
+      <div class="result-sub" id="resultSub"></div>
+    </div>
+    <button class="btn" id="retryBtn" onclick="retry()">Jugar otra vez</button>
+    <button class="btn secondary" onclick="backToMenu()">Volver al menú</button>
+  </div>
+
+</div>
+
+<script>
+const STORE_KEY = 'agilidad-store-v1';
+let store = Object.assign({ mathBest: 0, seqBest: 0, gridBest: 0, quizBest: 0 }, JSON.parse(localStorage.getItem(STORE_KEY) || '{}'));
+function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+let lastMode = null;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('mainHeader').style.display = 'none';
+  document.getElementById(id).classList.add('active');
+}
+function backToMenu() {
+  clearInterval(mathTimer);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('menu').style.display = 'flex';
+  document.getElementById('mainHeader').style.display = 'block';
+  updateMenuBadges();
+}
+function updateMenuBadges() {
+  document.getElementById('badge-math').textContent = store.mathBest > 0 ? store.mathBest : '–';
+  document.getElementById('badge-seq').textContent = store.seqBest > 0 ? 'Nv ' + store.seqBest : '–';
+  document.getElementById('badge-grid').textContent = store.gridBest > 0 ? 'Nv ' + store.gridBest : '–';
+  document.getElementById('badge-quiz').textContent = store.quizBest > 0 ? store.quizBest + '/10' : '–';
+}
+updateMenuBadges();
+function retry() {
+  if (lastMode === 'math') startMath();
+  else if (lastMode === 'seq') startSequence();
+  else if (lastMode === 'grid') startGrid();
+  else if (lastMode === 'quiz') startQuiz();
+}
+function showResult(icon, title, big, sub) {
+  document.getElementById('resultIcon').textContent = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultBig').textContent = big;
+  document.getElementById('resultSub').textContent = sub;
+  showScreen('resultScreen');
+}
+
+/* ---------- MODO 1: CALCULO RAPIDO ---------- */
+let mathScore = 0, mathTimeLeft = 60, mathTimer = null, mathAnswer = 0, mathTimedMode = true, mathElapsed = 0;
+
+function toggleTimedMode(checked) {
+  mathTimedMode = checked;
+  document.getElementById('timedToggle').checked = checked;
+  // Si hay una partida en curso, reinicia con el nuevo modo
+  if (document.getElementById('mathScreen').classList.contains('active')) {
+    startMath();
+  }
+}
+
+function startMath() {
+  lastMode = 'math';
+  mathScore = 0; mathTimeLeft = 60; mathElapsed = 0;
+  document.getElementById('mathScore').textContent = mathScore;
+  document.getElementById('mathFeedback').textContent = '';
+  document.getElementById('timedToggle').checked = mathTimedMode;
+  showScreen('mathScreen');
+  nextMathProblem();
+  clearInterval(mathTimer);
+
+  if (mathTimedMode) {
+    document.getElementById('mathTimeLbl').textContent = 'Segundos';
+    document.getElementById('mathTime').textContent = mathTimeLeft;
+    mathTimer = setInterval(() => {
+      mathTimeLeft--;
+      document.getElementById('mathTime').textContent = mathTimeLeft;
+      if (mathTimeLeft <= 0) {
+        clearInterval(mathTimer);
+        if (mathScore > store.mathBest) { store.mathBest = mathScore; saveStore(); }
+        showResult('⏱️', '¡Tiempo!', mathScore, `operaciones correctas · récord ${store.mathBest}`);
+      }
+    }, 1000);
+  } else {
+    document.getElementById('mathTimeLbl').textContent = 'Tiempo';
+    document.getElementById('mathTime').textContent = '0:00';
+    mathTimer = setInterval(() => {
+      mathElapsed++;
+      const m = Math.floor(mathElapsed / 60);
+      const s = mathElapsed % 60;
+      document.getElementById('mathTime').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
+  }
+  document.getElementById('mathInput').focus();
+}
+
+function nextMathProblem() {
+  const ops = ['+', '-', '×', '%'];
+  const op = ops[Math.floor(Math.random() * ops.length)];
+  let a, b, text;
+  if (op === '×') {
+    a = Math.floor(Math.random() * 12) + 2;
+    b = Math.floor(Math.random() * 12) + 2;
+    mathAnswer = a * b;
+    text = `${a} × ${b}`;
+  } else if (op === '+') {
+    a = Math.floor(Math.random() * 80) + 10;
+    b = Math.floor(Math.random() * 80) + 10;
+    mathAnswer = a + b;
+    text = `${a} + ${b}`;
+  } else if (op === '-') {
+    a = Math.floor(Math.random() * 80) + 20;
+    b = Math.floor(Math.random() * a);
+    mathAnswer = a - b;
+    text = `${a} − ${b}`;
+  } else {
+    const percents = [5, 10, 20, 25, 50];
+    const p = percents[Math.floor(Math.random() * percents.length)];
+    const base = 20 * (Math.floor(Math.random() * 19) + 2); // 40..400
+    mathAnswer = (p * base) / 100;
+    text = `${p}% de ${base}`;
+  }
+  document.getElementById('mathPrompt').textContent = text;
+  document.getElementById('mathInput').value = '';
+}
+
+function submitMath() {
+  const val = parseInt(document.getElementById('mathInput').value, 10);
+  const fb = document.getElementById('mathFeedback');
+  if (val === mathAnswer) {
+    mathScore++;
+    document.getElementById('mathScore').textContent = mathScore;
+    fb.textContent = '✓ Correcto';
+    fb.className = 'feedback ok';
+  } else {
+    fb.textContent = `✗ Era ${mathAnswer}`;
+    fb.className = 'feedback bad';
+  }
+  nextMathProblem();
+  document.getElementById('mathInput').focus();
+}
+document.getElementById('mathInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitMath(); });
+
+/* ---------- MODO 2: MEMORIA DE SECUENCIA ---------- */
+let seqLevel = 1, seqSequence = [];
+
+function startSequence() {
+  lastMode = 'seq';
+  seqLevel = 1;
+  document.getElementById('seqBest').textContent = store.seqBest;
+  document.getElementById('seqFeedback').textContent = '';
+  showScreen('seqScreen');
+  nextSeqLevel();
+}
+
+function genSequenceNoRepeats(len) {
+  const seq = [];
+  let prev = -1;
+  for (let i = 0; i < len; i++) {
+    let n;
+    do { n = Math.floor(Math.random() * 10); } while (n === prev);
+    seq.push(n);
+    prev = n;
+  }
+  return seq;
+}
+
+function nextSeqLevel() {
+  document.getElementById('seqLevel').textContent = seqLevel;
+  seqSequence = genSequenceNoRepeats(seqLevel + 2);
+  const input = document.getElementById('seqInput');
+  const btn = document.getElementById('seqBtn');
+  input.style.display = 'none';
+  btn.style.display = 'none';
+  input.value = '';
+  document.getElementById('seqFeedback').textContent = '';
+  const prompt = document.getElementById('seqPrompt');
+
+  let i = 0;
+  prompt.textContent = 'Memoriza…';
+  setTimeout(() => {
+    const interval = setInterval(() => {
+      if (i < seqSequence.length) {
+        prompt.textContent = seqSequence[i];
+        i++;
+      } else {
+        clearInterval(interval);
+        prompt.textContent = '¿Cuál era la secuencia?';
+        input.style.display = 'block';
+        btn.style.display = 'block';
+        input.focus();
+      }
+    }, 900);
+  }, 600);
+}
+
+function submitSeq() {
+  const val = document.getElementById('seqInput').value.trim();
+  const correct = seqSequence.join('');
+  const fb = document.getElementById('seqFeedback');
+  if (val === correct) {
+    seqLevel++;
+    fb.textContent = '✓ ¡Bien! Siguiente nivel';
+    fb.className = 'feedback ok';
+    setTimeout(nextSeqLevel, 700);
+  } else {
+    if (seqLevel - 1 > store.seqBest) { store.seqBest = seqLevel - 1; saveStore(); }
+    showResult('🧩', 'Fallaste', seqLevel - 1, `niveles superados · la secuencia era ${correct} · récord ${store.seqBest}`);
+  }
+}
+document.getElementById('seqInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitSeq(); });
+
+/* ---------- MODO 3: MEMORIA DE CUADRICULA ---------- */
+let gridLevel = 1, gridPattern = [], gridUserPicks = [], gridLocked = true;
+const GRID_SIZE = 9;
+
+function startGrid() {
+  lastMode = 'grid';
+  gridLevel = 1;
+  document.getElementById('gridBest').textContent = store.gridBest;
+  showScreen('gridScreen');
+  buildGrid();
+  nextGridLevel();
+}
+
+function buildGrid() {
+  const el = document.getElementById('gridEl');
+  el.innerHTML = '';
+  for (let i = 0; i < GRID_SIZE; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.idx = i;
+    cell.onclick = () => handleGridClick(i, cell);
+    el.appendChild(cell);
+  }
+}
+
+function nextGridLevel() {
+  document.getElementById('gridLevel').textContent = gridLevel;
+  document.getElementById('gridFeedback').textContent = '';
+  gridUserPicks = [];
+  gridLocked = true;
+  document.getElementById('gridPrompt').textContent = 'Observa la cuadrícula…';
+  const cells = Array.from({length: GRID_SIZE}, (_, i) => i);
+  gridPattern = [];
+  const count = Math.min(gridLevel + 2, GRID_SIZE);
+  const pool = [...cells];
+  for (let i = 0; i < count; i++) {
+    const idx = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+    gridPattern.push(idx);
+  }
+  document.querySelectorAll('.cell').forEach(c => c.className = 'cell');
+
+  let i = 0;
+  setTimeout(() => {
+    const interval = setInterval(() => {
+      document.querySelectorAll('.cell').forEach(c => c.classList.remove('lit'));
+      if (i < gridPattern.length) {
+        const cell = document.querySelector(`.cell[data-idx="${gridPattern[i]}"]`);
+        cell.classList.add('lit');
+        i++;
+      } else {
+        clearInterval(interval);
+        document.querySelectorAll('.cell').forEach(c => c.classList.remove('lit'));
+        document.getElementById('gridPrompt').textContent = `Repite el orden (${gridPattern.length} celdas)`;
+        gridLocked = false;
+      }
+    }, 700);
+  }, 500);
+}
+
+function handleGridClick(idx, cellEl) {
+  if (gridLocked) return;
+  const expectedIdx = gridUserPicks.length;
+  gridUserPicks.push(idx);
+  if (idx === gridPattern[expectedIdx]) {
+    cellEl.classList.add('correct');
+    if (gridUserPicks.length === gridPattern.length) {
+      gridLevel++;
+      document.getElementById('gridFeedback').textContent = '✓ ¡Nivel superado!';
+      document.getElementById('gridFeedback').className = 'feedback ok';
+      gridLocked = true;
+      setTimeout(nextGridLevel, 800);
+    }
+  } else {
+    cellEl.classList.add('wrong');
+    gridLocked = true;
+    if (gridLevel - 1 > store.gridBest) { store.gridBest = gridLevel - 1; saveStore(); }
+    setTimeout(() => {
+      showResult('▦', 'Fallaste', gridLevel - 1, `niveles superados · récord ${store.gridBest}`);
+    }, 600);
+  }
+}
+
+/* ---------- MODO 4: QUIZ GEOGRAFIA ESPAÑA ---------- */
+const QUIZ_BANK = [
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Andalucía?', opts: ['Sevilla', 'Córdoba', 'Málaga'], a: 0 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de la Comunidad Valenciana?', opts: ['Alicante', 'Valencia', 'Castellón'], a: 1 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Castilla y León?', opts: ['Salamanca', 'León', 'Valladolid'], a: 2 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Galicia?', opts: ['Vigo', 'Santiago de Compostela', 'A Coruña'], a: 1 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Castilla-La Mancha?', opts: ['Toledo', 'Cuenca', 'Albacete'], a: 0 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Aragón?', opts: ['Huesca', 'Teruel', 'Zaragoza'], a: 2 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Extremadura?', opts: ['Cáceres', 'Badajoz', 'Mérida'], a: 2 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Canarias?', opts: ['Las Palmas de Gran Canaria', 'La Laguna', 'Arrecife'], a: 0 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Murcia?', opts: ['Cartagena', 'Murcia', 'Lorca'], a: 1 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Cantabria?', opts: ['Torrelavega', 'Santander', 'Castro Urdiales'], a: 1 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital del País Vasco?', opts: ['Bilbao', 'San Sebastián', 'Vitoria-Gasteiz'], a: 2 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de las Islas Baleares?', opts: ['Palma de Mallorca', 'Ibiza', 'Mahón'], a: 0 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de La Rioja?', opts: ['Logroño', 'Calahorra', 'Haro'], a: 0 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Burgos?', opts: ['La Rioja', 'Castilla y León', 'Cantabria'], a: 1 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Huelva?', opts: ['Andalucía', 'Extremadura', 'Región de Murcia'], a: 0 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Lugo?', opts: ['Asturias', 'Galicia', 'Castilla y León'], a: 1 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Guadalajara?', opts: ['Castilla-La Mancha', 'Comunidad de Madrid', 'Aragón'], a: 0 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Girona?', opts: ['Cataluña', 'Comunidad Valenciana', 'Islas Baleares'], a: 0 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Jaén?', opts: ['Castilla-La Mancha', 'Andalucía', 'Región de Murcia'], a: 1 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Álava?', opts: ['Navarra', 'Cantabria', 'País Vasco'], a: 2 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Soria?', opts: ['Castilla y León', 'Aragón', 'La Rioja'], a: 0 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Teruel?', opts: ['Comunidad Valenciana', 'Aragón', 'Cataluña'], a: 1 },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Ourense?', opts: ['Galicia', 'Asturias', 'Castilla y León'], a: 0 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Vigo?', opts: ['A Coruña', 'Pontevedra', 'Lugo'], a: 1 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Gijón?', opts: ['Asturias', 'Cantabria', 'León'], a: 0 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Marbella?', opts: ['Cádiz', 'Málaga', 'Granada'], a: 1 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Elche?', opts: ['Valencia', 'Murcia', 'Alicante'], a: 2 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Gandía?', opts: ['Valencia', 'Alicante', 'Castellón'], a: 0 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Jerez de la Frontera?', opts: ['Sevilla', 'Cádiz', 'Huelva'], a: 1 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Reus?', opts: ['Barcelona', 'Girona', 'Tarragona'], a: 2 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Sanxenxo?', opts: ['Pontevedra', 'A Coruña', 'Lugo'], a: 0 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Mérida?', opts: ['Cáceres', 'Badajoz', 'Salamanca'], a: 1 },
+  { cat: 'Ciudad', q: '¿En qué provincia está Ronda?', opts: ['Cádiz', 'Málaga', 'Sevilla'], a: 1 },
+];
+
+let quizQueue = [], quizIdx = 0, quizScore = 0, quizAnswered = false;
+
+function startQuiz() {
+  lastMode = 'quiz';
+  quizScore = 0; quizIdx = 0; quizAnswered = false;
+  quizQueue = [...QUIZ_BANK].sort(() => Math.random() - 0.5).slice(0, 10);
+  document.getElementById('quizScore').textContent = quizScore;
+  buildQuizProgress();
+  showScreen('quizScreen');
+  renderQuizQuestion();
+}
+
+function buildQuizProgress() {
+  const el = document.getElementById('quizProgress');
+  el.innerHTML = '';
+  for (let i = 0; i < quizQueue.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.id = 'qdot-' + i;
+    el.appendChild(d);
+  }
+}
+
+function renderQuizQuestion() {
+  quizAnswered = false;
+  const item = quizQueue[quizIdx];
+  document.getElementById('quizNum').textContent = `${quizIdx + 1}/${quizQueue.length}`;
+  document.getElementById('quizCategory').textContent = item.cat;
+  document.getElementById('quizQuestion').textContent = item.q;
+  const optsEl = document.getElementById('quizOptions');
+  optsEl.innerHTML = '';
+  item.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'quiz-opt';
+    b.textContent = opt;
+    b.onclick = () => answerQuiz(i, b);
+    optsEl.appendChild(b);
+  });
+}
+
+function answerQuiz(i, btnEl) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const item = quizQueue[quizIdx];
+  const buttons = document.querySelectorAll('.quiz-opt');
+  buttons.forEach(b => b.classList.add('disabled'));
+  const dot = document.getElementById('qdot-' + quizIdx);
+  if (i === item.a) {
+    quizScore++;
+    document.getElementById('quizScore').textContent = quizScore;
+    btnEl.classList.add('correct');
+    dot.classList.add('done');
+  } else {
+    btnEl.classList.add('wrong');
+    buttons[item.a].classList.add('correct');
+    dot.classList.add('wrong');
+  }
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQueue.length) {
+      const pct = Math.round((quizScore / quizQueue.length) * 100);
+      const icon = pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '🗺️';
+      if (quizScore > store.quizBest) { store.quizBest = quizScore; saveStore(); }
+      showResult(icon, 'Geografía de España', `${quizScore}/${quizQueue.length}`, `${pct}% de aciertos`);
+    } else {
+      renderQuizQuestion();
+    }
+  }, 900);
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
