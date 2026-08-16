@@ -25,6 +25,7 @@
     --red: #ff3b30;
     --orange: #ff9500;
     --purple: #af52de;
+    --teal: #32ade6;
     --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
     --radius-l: 28px;
     --radius-m: 18px;
@@ -116,7 +117,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 26px;
+    margin-bottom: 20px;
   }
   .stat { text-align: center; }
   .stat .num { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
@@ -127,7 +128,7 @@
     background: var(--surface);
     border: 1px solid var(--hairline);
     border-radius: var(--radius-l);
-    padding: 34px 26px;
+    padding: 30px 22px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -235,7 +236,7 @@
   .cell.correct { background: var(--green); }
   .cell.wrong { background: var(--red); }
 
-  /* quiz options */
+  /* progress dots (quiz + map) */
   .quiz-progress {
     display: flex;
     gap: 5px;
@@ -280,6 +281,131 @@
   .quiz-opt.wrong { background: rgba(255,59,48,0.13); border-color: var(--red); color: #c8281e; font-weight: 700; }
   .quiz-opt.disabled { pointer-events: none; }
 
+  /* explanation box (quiz + map) */
+  .explain-box {
+    display: none;
+    width: 100%;
+    background: var(--surface-2);
+    border-radius: var(--radius-s);
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.45;
+    margin-top: 6px;
+  }
+  .explain-box.show { display: block; }
+  .explain-box b { color: #1a7d34; }
+
+  /* map mode selection */
+  .mode-select { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 14px; }
+  .mode-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1.5px solid var(--hairline);
+    border-radius: var(--radius-s);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+  .mode-chip.selected { border-color: var(--blue); background: rgba(0,122,255,0.06); color: var(--blue); }
+  .mode-chip .check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--hairline); flex-shrink: 0; }
+  .mode-chip.selected .check { border-color: var(--blue); background: var(--blue); }
+
+  /* map grid */
+  .map-timer-pill {
+    align-self: center;
+    background: var(--surface-2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .map-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 4px;
+    width: 100%;
+    aspect-ratio: 9 / 6.3;
+    margin-bottom: 16px;
+  }
+  .map-tile {
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease;
+  }
+  .map-tile:active { transform: scale(0.92); }
+  .map-tile.correct { background: var(--green); }
+  .map-tile.wrong { background: var(--red); }
+  .map-tile.disabled { pointer-events: none; }
+
+  /* ranking */
+  .ranking-box {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-m);
+    padding: 16px 18px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    box-shadow: var(--shadow);
+  }
+  .ranking-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .ranking-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .ranking-row:last-child { border-bottom: none; }
+  .ranking-row .rk-date { color: var(--text-dim); font-size: 12px; font-weight: 500; }
+
+  /* record banner */
+  .record-banner {
+    display: none;
+    width: 100%;
+    background: linear-gradient(90deg, #ff9500, #ff3b30);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14.5px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    animation: pulseRecord 1s ease infinite;
+  }
+  .record-banner.show { display: block; }
+  @keyframes pulseRecord { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
   /* result */
   .result-icon { font-size: 44px; margin-bottom: 6px; }
   .result-title { font-size: 15px; color: var(--text-dim); font-weight: 600; }
@@ -294,7 +420,14 @@
     margin: 4px 0 6px;
     font-variant-numeric: tabular-nums;
   }
-  .result-sub { font-size: 14px; color: var(--text-dim); text-align: center; margin-bottom: 24px; }
+  .result-sub { font-size: 14px; color: var(--text-dim); text-align: center; margin-bottom: 18px; }
+
+  /* confetti */
+  .confetti-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 999; }
+  .confetti-piece { position: absolute; top: -20px; border-radius: 2px; animation-name: confettiFall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
+  @keyframes confettiFall { to { transform: translateY(115vh) rotate(620deg); opacity: 0.95; } }
+  .confetti-rocket { position: absolute; bottom: -40px; font-size: 22px; animation-name: rocketUp; animation-timing-function: ease-out; animation-fill-mode: forwards; }
+  @keyframes rocketUp { to { transform: translateY(-115vh) rotate(15deg); opacity: 0; } }
 </style>
 </head>
 <body>
@@ -326,6 +459,11 @@
       <div class="mode-copy"><b>Geografía de España</b><span>Comunidades, provincias y ciudades — 3 opciones</span></div>
       <div class="badge" id="badge-quiz">–</div>
     </button>
+    <button class="mode-card" onclick="startMapSetup()">
+      <div class="mode-icon" style="background:rgba(50,173,230,0.14); color:var(--teal);">🧭</div>
+      <div class="mode-copy"><b>Mapa de España</b><span>Toca el mapa: comunidades, provincias o ciudades</span></div>
+      <div class="badge" id="badge-map">–</div>
+    </button>
   </div>
 
   <!-- MATH -->
@@ -351,7 +489,7 @@
       <button class="btn" onclick="submitMath()">Comprobar</button>
       <div class="feedback" id="mathFeedback"></div>
     </div>
-    <button class="btn secondary" onclick="backToMenu()">Salir</button>
+    <button class="btn secondary" onclick="finalizeMath()">Salir</button>
   </div>
 
   <!-- SEQUENCE -->
@@ -394,17 +532,74 @@
       <div class="quiz-category" id="quizCategory">Comunidad autónoma</div>
       <div class="quiz-question" id="quizQuestion">¿Cuál es la capital de…?</div>
       <div class="quiz-options" id="quizOptions"></div>
+      <div class="explain-box" id="quizExplain"></div>
+      <button class="btn" id="quizContinueBtn" style="display:none" onclick="quizContinue()">Continuar</button>
     </div>
     <button class="btn secondary" onclick="backToMenu()">Salir</button>
   </div>
 
+  <!-- MAP SETUP -->
+  <div id="mapSetupScreen" class="screen">
+    <div class="header" style="margin-bottom:22px;">
+      <div class="eyebrow">Mapa de España</div>
+      <div class="title" style="font-size:26px;">¿Qué practicamos?</div>
+    </div>
+    <div class="mode-select" id="mapModeSelect">
+      <button class="mode-chip selected" data-mode="ccaa" onclick="selectMapMode('ccaa', this)">
+        <span>Comunidades autónomas</span><span class="check"></span>
+      </button>
+      <button class="mode-chip" data-mode="provincia" onclick="selectMapMode('provincia', this)">
+        <span>Provincias</span><span class="check"></span>
+      </button>
+      <button class="mode-chip" data-mode="ciudad" onclick="selectMapMode('ciudad', this)">
+        <span>Ciudades</span><span class="check"></span>
+      </button>
+    </div>
+    <div class="switch-row">
+      <div>
+        <div class="switch-label">Contrarreloj</div>
+        <div class="switch-sub">60 segundos para toda la partida</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="mapTimedToggle" onchange="mapTimedMode = this.checked">
+        <span class="track"></span>
+        <span class="thumb"></span>
+      </label>
+    </div>
+    <button class="btn" onclick="beginMap()">Empezar</button>
+    <button class="btn secondary" onclick="backToMenu()">Volver al menú</button>
+  </div>
+
+  <!-- MAP GAME -->
+  <div id="mapScreen" class="screen">
+    <div class="top-bar">
+      <div class="stat"><div class="num" id="mapScoreEl">0</div><div class="lbl">Aciertos</div></div>
+      <div class="stat"><div class="num" id="mapNumEl">1/10</div><div class="lbl">Pregunta</div></div>
+    </div>
+    <div class="map-timer-pill" id="mapTimerPill" style="display:none;">⏱ 60s</div>
+    <div class="card">
+      <div class="quiz-progress" id="mapProgress"></div>
+      <div class="quiz-category" id="mapCategoryLbl">Comunidades autónomas</div>
+      <div class="quiz-question" id="mapQuestion" style="font-size:18px;">¿Dónde está…?</div>
+      <div class="map-grid" id="mapGrid"></div>
+      <div class="explain-box" id="mapExplain"></div>
+      <button class="btn" id="mapContinueBtn" style="display:none" onclick="mapContinue()">Continuar</button>
+    </div>
+    <button class="btn secondary" onclick="exitMap()">Salir</button>
+  </div>
+
   <!-- RESULT -->
   <div id="resultScreen" class="screen">
-    <div class="header" style="margin-bottom:22px;">
+    <div class="header" style="margin-bottom:14px;">
       <div class="result-icon" id="resultIcon">🎯</div>
       <div class="result-title" id="resultTitle">Resultado</div>
       <div class="result-big" id="resultBig">0</div>
       <div class="result-sub" id="resultSub"></div>
+    </div>
+    <div class="record-banner" id="recordBanner">🎉 ¡Nuevo récord! 🚀</div>
+    <div class="ranking-box" id="rankingBox" style="display:none;">
+      <div class="ranking-title">Tus mejores partidas</div>
+      <div id="rankingList"></div>
     </div>
     <button class="btn" id="retryBtn" onclick="retry()">Jugar otra vez</button>
     <button class="btn secondary" onclick="backToMenu()">Volver al menú</button>
@@ -414,7 +609,7 @@
 
 <script>
 const STORE_KEY = 'agilidad-store-v1';
-let store = Object.assign({ mathBest: 0, seqBest: 0, gridBest: 0, quizBest: 0 }, JSON.parse(localStorage.getItem(STORE_KEY) || '{}'));
+let store = Object.assign({ mathBest: 0, seqBest: 0, gridBest: 0, quizBest: 0, mapBest: 0 }, JSON.parse(localStorage.getItem(STORE_KEY) || '{}'));
 function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 let lastMode = null;
 
@@ -426,6 +621,7 @@ function showScreen(id) {
 }
 function backToMenu() {
   clearInterval(mathTimer);
+  clearInterval(mapTimer);
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('menu').style.display = 'flex';
   document.getElementById('mainHeader').style.display = 'block';
@@ -436,6 +632,7 @@ function updateMenuBadges() {
   document.getElementById('badge-seq').textContent = store.seqBest > 0 ? 'Nv ' + store.seqBest : '–';
   document.getElementById('badge-grid').textContent = store.gridBest > 0 ? 'Nv ' + store.gridBest : '–';
   document.getElementById('badge-quiz').textContent = store.quizBest > 0 ? store.quizBest + '/10' : '–';
+  document.getElementById('badge-map').textContent = store.mapBest > 0 ? store.mapBest + '/10' : '–';
 }
 updateMenuBadges();
 function retry() {
@@ -443,13 +640,67 @@ function retry() {
   else if (lastMode === 'seq') startSequence();
   else if (lastMode === 'grid') startGrid();
   else if (lastMode === 'quiz') startQuiz();
+  else if (lastMode === 'map') beginMap();
 }
-function showResult(icon, title, big, sub) {
+
+/* ---------- RANKING + CELEBRACION (compartido por todos los modos) ---------- */
+function pushHistory(modeKey, scoreValue) {
+  const key = modeKey + 'History';
+  if (!store[key]) store[key] = [];
+  store[key].unshift({ score: scoreValue, date: Date.now() });
+  store[key] = store[key].slice(0, 20);
+}
+function renderRanking(modeKey) {
+  const key = modeKey + 'History';
+  const list = (store[key] || []).slice().sort((a, b) => b.score - a.score).slice(0, 5);
+  const box = document.getElementById('rankingBox');
+  const el = document.getElementById('rankingList');
+  if (!list.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const medals = ['🥇', '🥈', '🥉', '4.', '5.'];
+  el.innerHTML = list.map((r, i) => {
+    const d = new Date(r.date);
+    const ds = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+    return `<div class="ranking-row"><span>${medals[i]} ${r.score}</span><span class="rk-date">${ds}</span></div>`;
+  }).join('');
+}
+function showResult(icon, title, big, sub, modeKey, isRecord) {
   document.getElementById('resultIcon').textContent = icon;
   document.getElementById('resultTitle').textContent = title;
   document.getElementById('resultBig').textContent = big;
   document.getElementById('resultSub').textContent = sub;
+  document.getElementById('recordBanner').classList.toggle('show', !!isRecord);
+  if (modeKey) renderRanking(modeKey);
   showScreen('resultScreen');
+  if (isRecord) celebrate();
+}
+function celebrate() {
+  const layer = document.createElement('div');
+  layer.className = 'confetti-layer';
+  const colors = ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'];
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const size = 6 + Math.random() * 6;
+    p.style.width = size + 'px';
+    p.style.height = (size * 1.6) + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (2 + Math.random() * 1.6) + 's';
+    p.style.animationDelay = (Math.random() * 0.4) + 's';
+    layer.appendChild(p);
+  }
+  for (let i = 0; i < 6; i++) {
+    const r = document.createElement('div');
+    r.className = 'confetti-rocket';
+    r.textContent = '🚀';
+    r.style.left = (8 + Math.random() * 80) + '%';
+    r.style.animationDuration = (1.6 + Math.random() * 0.8) + 's';
+    r.style.animationDelay = (Math.random() * 0.5) + 's';
+    layer.appendChild(r);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 3800);
 }
 
 /* ---------- MODO 1: CALCULO RAPIDO ---------- */
@@ -458,7 +709,6 @@ let mathScore = 0, mathTimeLeft = 60, mathTimer = null, mathAnswer = 0, mathTime
 function toggleTimedMode(checked) {
   mathTimedMode = checked;
   document.getElementById('timedToggle').checked = checked;
-  // Si hay una partida en curso, reinicia con el nuevo modo
   if (document.getElementById('mathScreen').classList.contains('active')) {
     startMath();
   }
@@ -481,9 +731,7 @@ function startMath() {
       mathTimeLeft--;
       document.getElementById('mathTime').textContent = mathTimeLeft;
       if (mathTimeLeft <= 0) {
-        clearInterval(mathTimer);
-        if (mathScore > store.mathBest) { store.mathBest = mathScore; saveStore(); }
-        showResult('⏱️', '¡Tiempo!', mathScore, `operaciones correctas · récord ${store.mathBest}`);
+        finalizeMath();
       }
     }, 1000);
   } else {
@@ -521,7 +769,7 @@ function nextMathProblem() {
   } else {
     const percents = [5, 10, 20, 25, 50];
     const p = percents[Math.floor(Math.random() * percents.length)];
-    const base = 20 * (Math.floor(Math.random() * 19) + 2); // 40..400
+    const base = 20 * (Math.floor(Math.random() * 19) + 2);
     mathAnswer = (p * base) / 100;
     text = `${p}% de ${base}`;
   }
@@ -545,6 +793,16 @@ function submitMath() {
   document.getElementById('mathInput').focus();
 }
 document.getElementById('mathInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitMath(); });
+
+function finalizeMath() {
+  clearInterval(mathTimer);
+  const prevBest = store.mathBest;
+  if (mathScore > store.mathBest) store.mathBest = mathScore;
+  pushHistory('math', mathScore);
+  saveStore();
+  const isRecord = mathScore > prevBest && mathScore > 0;
+  showResult('⏱️', mathTimedMode ? '¡Tiempo!' : 'Partida terminada', mathScore, `operaciones correctas · récord ${store.mathBest}`, 'math', isRecord);
+}
 
 /* ---------- MODO 2: MEMORIA DE SECUENCIA ---------- */
 let seqLevel = 1, seqSequence = [];
@@ -609,8 +867,12 @@ function submitSeq() {
     fb.className = 'feedback ok';
     setTimeout(nextSeqLevel, 700);
   } else {
-    if (seqLevel - 1 > store.seqBest) { store.seqBest = seqLevel - 1; saveStore(); }
-    showResult('🧩', 'Fallaste', seqLevel - 1, `niveles superados · la secuencia era ${correct} · récord ${store.seqBest}`);
+    const prevBest = store.seqBest;
+    if (seqLevel - 1 > store.seqBest) store.seqBest = seqLevel - 1;
+    pushHistory('seq', seqLevel - 1);
+    saveStore();
+    const isRecord = (seqLevel - 1) > prevBest && (seqLevel - 1) > 0;
+    showResult('🧩', 'Fallaste', seqLevel - 1, `niveles superados · la secuencia era ${correct} · récord ${store.seqBest}`, 'seq', isRecord);
   }
 }
 document.getElementById('seqInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitSeq(); });
@@ -690,48 +952,52 @@ function handleGridClick(idx, cellEl) {
   } else {
     cellEl.classList.add('wrong');
     gridLocked = true;
-    if (gridLevel - 1 > store.gridBest) { store.gridBest = gridLevel - 1; saveStore(); }
+    const prevBest = store.gridBest;
+    if (gridLevel - 1 > store.gridBest) store.gridBest = gridLevel - 1;
+    pushHistory('grid', gridLevel - 1);
+    saveStore();
+    const isRecord = (gridLevel - 1) > prevBest && (gridLevel - 1) > 0;
     setTimeout(() => {
-      showResult('▦', 'Fallaste', gridLevel - 1, `niveles superados · récord ${store.gridBest}`);
+      showResult('▦', 'Fallaste', gridLevel - 1, `niveles superados · récord ${store.gridBest}`, 'grid', isRecord);
     }, 600);
   }
 }
 
 /* ---------- MODO 4: QUIZ GEOGRAFIA ESPAÑA ---------- */
 const QUIZ_BANK = [
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Andalucía?', opts: ['Sevilla', 'Córdoba', 'Málaga'], a: 0 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de la Comunidad Valenciana?', opts: ['Alicante', 'Valencia', 'Castellón'], a: 1 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Castilla y León?', opts: ['Salamanca', 'León', 'Valladolid'], a: 2 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Galicia?', opts: ['Vigo', 'Santiago de Compostela', 'A Coruña'], a: 1 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Castilla-La Mancha?', opts: ['Toledo', 'Cuenca', 'Albacete'], a: 0 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Aragón?', opts: ['Huesca', 'Teruel', 'Zaragoza'], a: 2 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Extremadura?', opts: ['Cáceres', 'Badajoz', 'Mérida'], a: 2 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Canarias?', opts: ['Las Palmas de Gran Canaria', 'La Laguna', 'Arrecife'], a: 0 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Murcia?', opts: ['Cartagena', 'Murcia', 'Lorca'], a: 1 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Cantabria?', opts: ['Torrelavega', 'Santander', 'Castro Urdiales'], a: 1 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital del País Vasco?', opts: ['Bilbao', 'San Sebastián', 'Vitoria-Gasteiz'], a: 2 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de las Islas Baleares?', opts: ['Palma de Mallorca', 'Ibiza', 'Mahón'], a: 0 },
-  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de La Rioja?', opts: ['Logroño', 'Calahorra', 'Haro'], a: 0 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Burgos?', opts: ['La Rioja', 'Castilla y León', 'Cantabria'], a: 1 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Huelva?', opts: ['Andalucía', 'Extremadura', 'Región de Murcia'], a: 0 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Lugo?', opts: ['Asturias', 'Galicia', 'Castilla y León'], a: 1 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Guadalajara?', opts: ['Castilla-La Mancha', 'Comunidad de Madrid', 'Aragón'], a: 0 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Girona?', opts: ['Cataluña', 'Comunidad Valenciana', 'Islas Baleares'], a: 0 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Jaén?', opts: ['Castilla-La Mancha', 'Andalucía', 'Región de Murcia'], a: 1 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Álava?', opts: ['Navarra', 'Cantabria', 'País Vasco'], a: 2 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Soria?', opts: ['Castilla y León', 'Aragón', 'La Rioja'], a: 0 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Teruel?', opts: ['Comunidad Valenciana', 'Aragón', 'Cataluña'], a: 1 },
-  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Ourense?', opts: ['Galicia', 'Asturias', 'Castilla y León'], a: 0 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Vigo?', opts: ['A Coruña', 'Pontevedra', 'Lugo'], a: 1 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Gijón?', opts: ['Asturias', 'Cantabria', 'León'], a: 0 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Marbella?', opts: ['Cádiz', 'Málaga', 'Granada'], a: 1 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Elche?', opts: ['Valencia', 'Murcia', 'Alicante'], a: 2 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Gandía?', opts: ['Valencia', 'Alicante', 'Castellón'], a: 0 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Jerez de la Frontera?', opts: ['Sevilla', 'Cádiz', 'Huelva'], a: 1 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Reus?', opts: ['Barcelona', 'Girona', 'Tarragona'], a: 2 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Sanxenxo?', opts: ['Pontevedra', 'A Coruña', 'Lugo'], a: 0 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Mérida?', opts: ['Cáceres', 'Badajoz', 'Salamanca'], a: 1 },
-  { cat: 'Ciudad', q: '¿En qué provincia está Ronda?', opts: ['Cádiz', 'Málaga', 'Sevilla'], a: 1 },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Andalucía?', opts: ['Sevilla', 'Córdoba', 'Málaga'], a: 0, exp: 'Sevilla es la capital de Andalucía.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de la Comunidad Valenciana?', opts: ['Alicante', 'Valencia', 'Castellón'], a: 1, exp: 'Valencia es la capital de la Comunidad Valenciana.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Castilla y León?', opts: ['Salamanca', 'León', 'Valladolid'], a: 2, exp: 'Valladolid es la capital de Castilla y León.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Galicia?', opts: ['Vigo', 'Santiago de Compostela', 'A Coruña'], a: 1, exp: 'Santiago de Compostela es la capital de Galicia.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Castilla-La Mancha?', opts: ['Toledo', 'Cuenca', 'Albacete'], a: 0, exp: 'Toledo es la capital de Castilla-La Mancha.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Aragón?', opts: ['Huesca', 'Teruel', 'Zaragoza'], a: 2, exp: 'Zaragoza es la capital de Aragón.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Extremadura?', opts: ['Cáceres', 'Badajoz', 'Mérida'], a: 2, exp: 'Mérida es la capital de Extremadura.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Canarias?', opts: ['Las Palmas de Gran Canaria', 'La Laguna', 'Arrecife'], a: 0, exp: 'Las Palmas de Gran Canaria comparte capitalidad de Canarias con Santa Cruz de Tenerife.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Murcia?', opts: ['Cartagena', 'Murcia', 'Lorca'], a: 1, exp: 'Murcia es la capital de la Región de Murcia.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de Cantabria?', opts: ['Torrelavega', 'Santander', 'Castro Urdiales'], a: 1, exp: 'Santander es la capital de Cantabria.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital del País Vasco?', opts: ['Bilbao', 'San Sebastián', 'Vitoria-Gasteiz'], a: 2, exp: 'Vitoria-Gasteiz es la capital del País Vasco.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de las Islas Baleares?', opts: ['Palma de Mallorca', 'Ibiza', 'Mahón'], a: 0, exp: 'Palma de Mallorca es la capital de las Islas Baleares.' },
+  { cat: 'Comunidad autónoma', q: '¿Cuál es la capital de La Rioja?', opts: ['Logroño', 'Calahorra', 'Haro'], a: 0, exp: 'Logroño es la capital de La Rioja.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Burgos?', opts: ['La Rioja', 'Castilla y León', 'Cantabria'], a: 1, exp: 'Burgos pertenece a Castilla y León.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Huelva?', opts: ['Andalucía', 'Extremadura', 'Región de Murcia'], a: 0, exp: 'Huelva pertenece a Andalucía.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Lugo?', opts: ['Asturias', 'Galicia', 'Castilla y León'], a: 1, exp: 'Lugo pertenece a Galicia.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Guadalajara?', opts: ['Castilla-La Mancha', 'Comunidad de Madrid', 'Aragón'], a: 0, exp: 'Guadalajara pertenece a Castilla-La Mancha.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Girona?', opts: ['Cataluña', 'Comunidad Valenciana', 'Islas Baleares'], a: 0, exp: 'Girona pertenece a Cataluña.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Jaén?', opts: ['Castilla-La Mancha', 'Andalucía', 'Región de Murcia'], a: 1, exp: 'Jaén pertenece a Andalucía.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Álava?', opts: ['Navarra', 'Cantabria', 'País Vasco'], a: 2, exp: 'Álava pertenece al País Vasco.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Soria?', opts: ['Castilla y León', 'Aragón', 'La Rioja'], a: 0, exp: 'Soria pertenece a Castilla y León.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Teruel?', opts: ['Comunidad Valenciana', 'Aragón', 'Cataluña'], a: 1, exp: 'Teruel pertenece a Aragón.' },
+  { cat: 'Provincia', q: '¿A qué comunidad autónoma pertenece Ourense?', opts: ['Galicia', 'Asturias', 'Castilla y León'], a: 0, exp: 'Ourense pertenece a Galicia.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Vigo?', opts: ['A Coruña', 'Pontevedra', 'Lugo'], a: 1, exp: 'Vigo está en la provincia de Pontevedra.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Gijón?', opts: ['Asturias', 'Cantabria', 'León'], a: 0, exp: 'Gijón está en Asturias (provincia única).' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Marbella?', opts: ['Cádiz', 'Málaga', 'Granada'], a: 1, exp: 'Marbella está en la provincia de Málaga.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Elche?', opts: ['Valencia', 'Murcia', 'Alicante'], a: 2, exp: 'Elche está en la provincia de Alicante.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Gandía?', opts: ['Valencia', 'Alicante', 'Castellón'], a: 0, exp: 'Gandía está en la provincia de Valencia.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Jerez de la Frontera?', opts: ['Sevilla', 'Cádiz', 'Huelva'], a: 1, exp: 'Jerez de la Frontera está en la provincia de Cádiz.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Reus?', opts: ['Barcelona', 'Girona', 'Tarragona'], a: 2, exp: 'Reus está en la provincia de Tarragona.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Sanxenxo?', opts: ['Pontevedra', 'A Coruña', 'Lugo'], a: 0, exp: 'Sanxenxo está en la provincia de Pontevedra.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Mérida?', opts: ['Cáceres', 'Badajoz', 'Salamanca'], a: 1, exp: 'Mérida está en la provincia de Badajoz.' },
+  { cat: 'Ciudad', q: '¿En qué provincia está Ronda?', opts: ['Cádiz', 'Málaga', 'Sevilla'], a: 1, exp: 'Ronda está en la provincia de Málaga.' },
 ];
 
 let quizQueue = [], quizIdx = 0, quizScore = 0, quizAnswered = false;
@@ -759,6 +1025,8 @@ function buildQuizProgress() {
 
 function renderQuizQuestion() {
   quizAnswered = false;
+  document.getElementById('quizExplain').classList.remove('show');
+  document.getElementById('quizContinueBtn').style.display = 'none';
   const item = quizQueue[quizIdx];
   document.getElementById('quizNum').textContent = `${quizIdx + 1}/${quizQueue.length}`;
   document.getElementById('quizCategory').textContent = item.cat;
@@ -791,17 +1059,267 @@ function answerQuiz(i, btnEl) {
     buttons[item.a].classList.add('correct');
     dot.classList.add('wrong');
   }
-  setTimeout(() => {
-    quizIdx++;
-    if (quizIdx >= quizQueue.length) {
-      const pct = Math.round((quizScore / quizQueue.length) * 100);
-      const icon = pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '🗺️';
-      if (quizScore > store.quizBest) { store.quizBest = quizScore; saveStore(); }
-      showResult(icon, 'Geografía de España', `${quizScore}/${quizQueue.length}`, `${pct}% de aciertos`);
-    } else {
-      renderQuizQuestion();
-    }
-  }, 900);
+  const exp = document.getElementById('quizExplain');
+  exp.innerHTML = `<b>Correcta: ${item.opts[item.a]}.</b> ${item.exp}`;
+  exp.classList.add('show');
+  document.getElementById('quizContinueBtn').style.display = 'block';
+}
+
+function quizContinue() {
+  quizIdx++;
+  if (quizIdx >= quizQueue.length) {
+    finalizeQuiz();
+  } else {
+    renderQuizQuestion();
+  }
+}
+
+function finalizeQuiz() {
+  const pct = Math.round((quizScore / quizQueue.length) * 100);
+  const icon = pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '🗺️';
+  const prevBest = store.quizBest;
+  if (quizScore > store.quizBest) store.quizBest = quizScore;
+  pushHistory('quiz', quizScore);
+  saveStore();
+  const isRecord = quizScore > prevBest && quizScore > 0;
+  showResult(icon, 'Geografía de España', `${quizScore}/${quizQueue.length}`, `${pct}% de aciertos`, 'quiz', isRecord);
+}
+
+/* ---------- MODO 5: MAPA DE ESPAÑA ---------- */
+const CCAA_REGIONS = [
+  { id: 'galicia', name: 'Galicia', abbr: 'GA', col: 1, row: 1 },
+  { id: 'asturias', name: 'Asturias', abbr: 'AST', col: 3, row: 1 },
+  { id: 'cantabria', name: 'Cantabria', abbr: 'CANT', col: 4, row: 1 },
+  { id: 'paisvasco', name: 'País Vasco', abbr: 'PV', col: 5, row: 1 },
+  { id: 'navarra', name: 'Navarra', abbr: 'NAV', col: 6, row: 2 },
+  { id: 'larioja', name: 'La Rioja', abbr: 'RIO', col: 5, row: 2 },
+  { id: 'cataluna', name: 'Cataluña', abbr: 'CAT', col: 8, row: 2 },
+  { id: 'castillayleon', name: 'Castilla y León', abbr: 'CyL', col: 3, row: 2 },
+  { id: 'aragon', name: 'Aragón', abbr: 'ARA', col: 6, row: 3 },
+  { id: 'madrid', name: 'Madrid', abbr: 'MAD', col: 4, row: 3 },
+  { id: 'castillalamancha', name: 'Castilla-La Mancha', abbr: 'CLM', col: 4, row: 4 },
+  { id: 'valenciana', name: 'C. Valenciana', abbr: 'VAL', col: 7, row: 4 },
+  { id: 'baleares', name: 'Islas Baleares', abbr: 'BAL', col: 9, row: 3 },
+  { id: 'extremadura', name: 'Extremadura', abbr: 'EXT', col: 2, row: 4 },
+  { id: 'andalucia', name: 'Andalucía', abbr: 'AND', col: 3, row: 5 },
+  { id: 'murcia', name: 'Región de Murcia', abbr: 'MUR', col: 6, row: 5 },
+  { id: 'canarias', name: 'Canarias', abbr: 'CAN', col: 1, row: 6 },
+];
+const EXTRA_TILES = [
+  { id: 'ceuta', name: 'Ceuta', abbr: 'CEU', col: 3, row: 6 },
+  { id: 'melilla', name: 'Melilla', abbr: 'MEL', col: 4, row: 6 },
+];
+const ALL_TILES = CCAA_REGIONS.concat(EXTRA_TILES);
+const TILE_BY_ID = Object.fromEntries(ALL_TILES.map(t => [t.id, t]));
+
+const PROVINCES = [
+  {name:'Almería', ccaa:'andalucia'}, {name:'Cádiz', ccaa:'andalucia'}, {name:'Córdoba', ccaa:'andalucia'},
+  {name:'Granada', ccaa:'andalucia'}, {name:'Huelva', ccaa:'andalucia'}, {name:'Jaén', ccaa:'andalucia'},
+  {name:'Málaga', ccaa:'andalucia'}, {name:'Sevilla', ccaa:'andalucia'},
+  {name:'Huesca', ccaa:'aragon'}, {name:'Teruel', ccaa:'aragon'}, {name:'Zaragoza', ccaa:'aragon'},
+  {name:'Asturias', ccaa:'asturias'},
+  {name:'Illes Balears', ccaa:'baleares'},
+  {name:'Las Palmas', ccaa:'canarias'}, {name:'Santa Cruz de Tenerife', ccaa:'canarias'},
+  {name:'Cantabria', ccaa:'cantabria'},
+  {name:'Ávila', ccaa:'castillayleon'}, {name:'Burgos', ccaa:'castillayleon'}, {name:'León', ccaa:'castillayleon'},
+  {name:'Palencia', ccaa:'castillayleon'}, {name:'Salamanca', ccaa:'castillayleon'}, {name:'Segovia', ccaa:'castillayleon'},
+  {name:'Soria', ccaa:'castillayleon'}, {name:'Valladolid', ccaa:'castillayleon'}, {name:'Zamora', ccaa:'castillayleon'},
+  {name:'Albacete', ccaa:'castillalamancha'}, {name:'Ciudad Real', ccaa:'castillalamancha'}, {name:'Cuenca', ccaa:'castillalamancha'},
+  {name:'Guadalajara', ccaa:'castillalamancha'}, {name:'Toledo', ccaa:'castillalamancha'},
+  {name:'Barcelona', ccaa:'cataluna'}, {name:'Girona', ccaa:'cataluna'}, {name:'Lleida', ccaa:'cataluna'}, {name:'Tarragona', ccaa:'cataluna'},
+  {name:'Alicante', ccaa:'valenciana'}, {name:'Castellón', ccaa:'valenciana'}, {name:'Valencia', ccaa:'valenciana'},
+  {name:'Badajoz', ccaa:'extremadura'}, {name:'Cáceres', ccaa:'extremadura'},
+  {name:'A Coruña', ccaa:'galicia'}, {name:'Lugo', ccaa:'galicia'}, {name:'Ourense', ccaa:'galicia'}, {name:'Pontevedra', ccaa:'galicia'},
+  {name:'Madrid', ccaa:'madrid'},
+  {name:'Murcia', ccaa:'murcia'},
+  {name:'Navarra', ccaa:'navarra'},
+  {name:'Álava', ccaa:'paisvasco'}, {name:'Guipúzcoa', ccaa:'paisvasco'}, {name:'Vizcaya', ccaa:'paisvasco'},
+  {name:'La Rioja', ccaa:'larioja'},
+];
+
+const CITIES = [
+  {name:'Vigo', ccaa:'galicia'}, {name:'Santiago de Compostela', ccaa:'galicia'},
+  {name:'Gijón', ccaa:'asturias'}, {name:'Oviedo', ccaa:'asturias'},
+  {name:'Santander', ccaa:'cantabria'},
+  {name:'Bilbao', ccaa:'paisvasco'}, {name:'San Sebastián', ccaa:'paisvasco'},
+  {name:'Pamplona', ccaa:'navarra'},
+  {name:'Logroño', ccaa:'larioja'},
+  {name:'Zaragoza', ccaa:'aragon'},
+  {name:'Barcelona', ccaa:'cataluna'}, {name:'Girona', ccaa:'cataluna'},
+  {name:'Valencia', ccaa:'valenciana'}, {name:'Alicante', ccaa:'valenciana'},
+  {name:'Palma de Mallorca', ccaa:'baleares'},
+  {name:'Madrid', ccaa:'madrid'},
+  {name:'Toledo', ccaa:'castillalamancha'},
+  {name:'Valladolid', ccaa:'castillayleon'}, {name:'Salamanca', ccaa:'castillayleon'},
+  {name:'Badajoz', ccaa:'extremadura'}, {name:'Mérida', ccaa:'extremadura'},
+  {name:'Sevilla', ccaa:'andalucia'}, {name:'Málaga', ccaa:'andalucia'}, {name:'Granada', ccaa:'andalucia'}, {name:'Marbella', ccaa:'andalucia'},
+  {name:'Murcia', ccaa:'murcia'},
+  {name:'Las Palmas de Gran Canaria', ccaa:'canarias'}, {name:'Santa Cruz de Tenerife', ccaa:'canarias'},
+  {name:'Ceuta', ccaa:'ceuta'}, {name:'Melilla', ccaa:'melilla'},
+];
+
+let mapSelectedMode = 'ccaa', mapTimedMode = false, mapTimer = null, mapTimeLeft = 60;
+let mapQueue = [], mapIdx = 0, mapScore = 0, mapAnswered = false;
+
+function startMapSetup() {
+  showScreen('mapSetupScreen');
+}
+function selectMapMode(mode, btnEl) {
+  mapSelectedMode = mode;
+  document.querySelectorAll('#mapModeSelect .mode-chip').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+}
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function buildMapQueue(mode) {
+  if (mode === 'ccaa') {
+    return shuffle(CCAA_REGIONS).slice(0, 10).map(r => ({
+      label: r.name, answerId: r.id, question: `¿Dónde está ${r.name}?`
+    }));
+  }
+  if (mode === 'provincia') {
+    return shuffle(PROVINCES).slice(0, 10).map(p => ({
+      label: p.name, answerId: p.ccaa, question: `¿En qué comunidad autónoma está la provincia de ${p.name}?`
+    }));
+  }
+  return shuffle(CITIES).slice(0, 10).map(c => ({
+    label: c.name, answerId: c.ccaa, question: `¿En qué comunidad autónoma está ${c.name}?`
+  }));
+}
+
+function beginMap() {
+  lastMode = 'map';
+  mapScore = 0; mapIdx = 0; mapAnswered = false; mapTimeLeft = 60;
+  mapQueue = buildMapQueue(mapSelectedMode);
+  document.getElementById('mapScoreEl').textContent = mapScore;
+  const catLabels = { ccaa: 'Comunidades autónomas', provincia: 'Provincias', ciudad: 'Ciudades' };
+  document.getElementById('mapCategoryLbl').textContent = catLabels[mapSelectedMode];
+  buildMapProgress();
+  buildMapGrid();
+  showScreen('mapScreen');
+  renderMapQuestion();
+
+  clearInterval(mapTimer);
+  const pill = document.getElementById('mapTimerPill');
+  if (mapTimedMode) {
+    pill.style.display = 'block';
+    pill.textContent = `⏱ ${mapTimeLeft}s`;
+    mapTimer = setInterval(() => {
+      mapTimeLeft--;
+      pill.textContent = `⏱ ${mapTimeLeft}s`;
+      if (mapTimeLeft <= 0) {
+        finalizeMap();
+      }
+    }, 1000);
+  } else {
+    pill.style.display = 'none';
+  }
+}
+
+function buildMapProgress() {
+  const el = document.getElementById('mapProgress');
+  el.innerHTML = '';
+  for (let i = 0; i < mapQueue.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.id = 'mdot-' + i;
+    el.appendChild(d);
+  }
+}
+
+function buildMapGrid() {
+  const el = document.getElementById('mapGrid');
+  el.innerHTML = '';
+  ALL_TILES.forEach(t => {
+    const tile = document.createElement('div');
+    tile.className = 'map-tile';
+    tile.id = 'tile-' + t.id;
+    tile.style.gridColumn = t.col;
+    tile.style.gridRow = t.row;
+    tile.onclick = () => handleMapClick(t.id, tile);
+    el.appendChild(tile);
+  });
+}
+
+function resetMapTiles() {
+  document.querySelectorAll('.map-tile').forEach(t => {
+    t.className = 'map-tile';
+    t.textContent = '';
+  });
+}
+
+function renderMapQuestion() {
+  mapAnswered = false;
+  resetMapTiles();
+  document.getElementById('mapExplain').classList.remove('show');
+  document.getElementById('mapContinueBtn').style.display = 'none';
+  const item = mapQueue[mapIdx];
+  document.getElementById('mapNumEl').textContent = `${mapIdx + 1}/${mapQueue.length}`;
+  document.getElementById('mapQuestion').textContent = item.question;
+}
+
+function handleMapClick(tileId, tileEl) {
+  if (mapAnswered) return;
+  mapAnswered = true;
+  const item = mapQueue[mapIdx];
+  const dot = document.getElementById('mdot-' + mapIdx);
+  document.querySelectorAll('.map-tile').forEach(t => t.classList.add('disabled'));
+
+  const correctTile = document.getElementById('tile-' + item.answerId);
+  const correctName = TILE_BY_ID[item.answerId].name;
+
+  if (tileId === item.answerId) {
+    mapScore++;
+    document.getElementById('mapScoreEl').textContent = mapScore;
+    tileEl.classList.add('correct');
+    tileEl.textContent = TILE_BY_ID[item.answerId].abbr;
+    dot.classList.add('done');
+  } else {
+    tileEl.classList.add('wrong');
+    tileEl.textContent = TILE_BY_ID[tileId] ? TILE_BY_ID[tileId].abbr : '';
+    correctTile.classList.add('correct');
+    correctTile.textContent = TILE_BY_ID[item.answerId].abbr;
+    dot.classList.add('wrong');
+  }
+
+  let expText;
+  if (mapSelectedMode === 'ccaa') {
+    expText = `${item.label} es la comunidad autónoma señalada en verde.`;
+  } else if (mapSelectedMode === 'provincia') {
+    expText = `${item.label} pertenece a ${correctName}.`;
+  } else {
+    expText = `${item.label} está en ${correctName}.`;
+  }
+  const exp = document.getElementById('mapExplain');
+  exp.innerHTML = `<b>Correcta: ${correctName}.</b> ${expText}`;
+  exp.classList.add('show');
+  document.getElementById('mapContinueBtn').style.display = 'block';
+}
+
+function mapContinue() {
+  mapIdx++;
+  if (mapIdx >= mapQueue.length) {
+    finalizeMap();
+  } else {
+    renderMapQuestion();
+  }
+}
+
+function finalizeMap() {
+  clearInterval(mapTimer);
+  const pct = Math.round((mapScore / mapQueue.length) * 100);
+  const icon = pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '🧭';
+  const prevBest = store.mapBest;
+  if (mapScore > store.mapBest) store.mapBest = mapScore;
+  pushHistory('map', mapScore);
+  saveStore();
+  const isRecord = mapScore > prevBest && mapScore > 0;
+  showResult(icon, 'Mapa de España', `${mapScore}/${mapQueue.length}`, `${pct}% de aciertos`, 'map', isRecord);
+}
+
+function exitMap() {
+  clearInterval(mapTimer);
+  backToMenu();
 }
 
 if ('serviceWorker' in navigator) {
